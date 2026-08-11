@@ -7,17 +7,24 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+<div id="welcome-popup" class="popup">
+    <div class="popup-content">
+        <h2>🎮 Welcome to Tric's Gaming Lounge</h2>
+        <p>Tournament is beginning on the 15th of October</p>
+        <p>Registration is Ongoing!!!</p>
+        <button onclick="closePopup()">Close</button>
+    </div>
+</div>
 <header>
     <h1> Tric's Gaming Lounge</h1>
 
     <nav class="navbar">
-        <a href="index.html">Home</a>
+        <a href="index.php">Home</a>
         <a href="about.html">About</a>
         <a href="pricing.html">Pricing</a>
         <a href="contact.html">Contact</a>
         <a href="gallery.html">Gallery</a>
-        <a href="https://www.playstation.com/en-gb/" target="_blank">PlayStation Official</a>
+
     </nav>
 </header>
 
@@ -38,21 +45,28 @@
    
     <h3>Our Gaming Experience</h3>
 
-    <div class="image-container">
+   <div class="image-container">
 
-        <a href="games.html">
-            <img src="ps5.png" alt="PlayStation 5 Console">
-        </a>
+    <img src="5.png" alt="PS5">
+    <img src="6.png" alt="PS4">
+    <img src="4.png" alt="PS4">
+    <img src="3.png" alt="PS4">
+    <img src="2.png" alt="PS4">
+    <img src="1.png" alt="PS4">
 
-        <img src="ps4.png" alt="PlayStation 4 Console">
+    <iframe
+        src="https://www.youtube.com/embed/_S0TxulE0YU?si=g7PLCYzANsc37bjL"
+        title="Video 1"
+        allowfullscreen>
+    </iframe>
 
-        <img src="2.png" alt="Players enjoying games">
+    <iframe
+        src="https://www.youtube.com/embed/t_xZ80g_0-E?si=AOmOtrBX0_gSqIgh"
+        title="Video 2"
+        allowfullscreen>
+    </iframe>
 
-        <img src="3.png" alt="Gaming tournament">
-
-        <img src="1.png" alt="Gaming lounge interior">
-
-    </div>
+</div>
 <section>
         <h2>Gaming Rates</h2>
 
@@ -123,20 +137,7 @@
     <audio controls>
         <source src="2.mp3" type="audio/mpeg">
     </audio>
-<section class="video-section">
-    <h2>Watch Our Latest Collection</h2>
 
-    <iframe
-        width="560"
-        height="315"
-        src="https://www.youtube.com/embed/2ar6aBBnU9k?si=dXsPGEHbb6scKsRf"
-        title="YouTube video player"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen>
-    </iframe>
-</section>
 <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.816052067178!2d36.82513110000001!3d-1.2842871999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f1129e1b9fc19%3A0xb46df9094918627f!2sTric%20Gaming%20Cafe!5e0!3m2!1sen!2ske!4v1780985563704!5m2!1sen!2ske"
             width="600"
@@ -145,6 +146,130 @@
 <footer>
     <p>&copy; 2026 Glenn's Gaming Lounge</p>
 </footer>
+
+<h2>Gaming Tournament Registration</h2>
+
+<form id="registrationForm">
+
+    <label>Name:</label><br>
+    <input type="text" name="name" required><br><br>
+
+    <label>Email:</label><br>
+    <input type="email"
+           name="email"
+           placeholder="cindy@gmail.com"
+           required><br><br>
+
+    <label>Phone Number:</label><br>
+    <input type="tel"
+           name="phone"
+           required><br><br>
+
+    <label>Gender:</label><br>
+
+    <input type="radio" name="gender" value="Male" required>
+    Male
+
+    <input type="radio" name="gender" value="Female">
+    Female
+
+    <br><br>
+
+    <input type="submit" value="Register">
+
+</form>
+
+
+<!-- Success message appears here -->
+<p id="message"></p>
+</table>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    // =========================
+    // SUPABASE CONNECTION
+    // =========================
+
+    const SUPABASE_URL = "https://skecjnagngyrrszdjivt.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_zHEonTIyoqtjk0SdvqXo1A_sMr4lpAz";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+    // =========================
+    // WELCOME POPUP
+    // =========================
+
+    window.onload = function () {
+        document.getElementById("welcome-popup").style.display = "flex";
+    };
+
+
+    function closePopup() {
+        document.getElementById("welcome-popup").style.display = "none";
+    }
+
+
+    // =========================
+    // REGISTRATION FORM
+    // =========================
+
+    document.getElementById("registrationForm").addEventListener("submit", async function(event) {
+
+        // Stop page from refreshing
+        event.preventDefault();
+
+        // Get form values
+        const name = document.querySelector('input[name="name"]').value;
+        const email = document.querySelector('input[name="email"]').value;
+        const phone = document.querySelector('input[name="phone"]').value;
+        const gender = document.querySelector('input[name="gender"]:checked').value;
+
+        // Message area
+        const message = document.getElementById("message");
+
+        // Insert into Supabase
+        const { data, error } = await supabaseClient
+            .from("users")
+            .insert([
+                {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    gender: gender
+                }
+            ])
+            .select();
+
+        // Check for errors
+        if (error) {
+
+            console.error(error);
+
+            message.innerHTML =
+                "❌ Registration failed: " + error.message;
+
+            message.style.color = "red";
+
+            return;
+        }
+
+        // Successful registration
+        message.innerHTML =
+            "✅ Registration successful! Welcome to Tric's Gaming Lounge.";
+
+        message.style.color = "green";
+
+        // Clear form
+        document.getElementById("registrationForm").reset();
+
+    });
+</script>
 
 </body>
 </html>
